@@ -1,0 +1,9 @@
+{
+    "Lua": {
+        "runtime.version": "LuaJIT",
+        "workspace.checkThirdParty": false
+    },
+    "Lua.workspace.library": [
+        "${3rd}/love2d/library"
+    ]
+}
