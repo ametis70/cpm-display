@@ -27,17 +27,15 @@ function start_downloader()
     downloader:start()
 end
 
-function love.load() love.window.setMode(WIDTH, HEIGHT) end
+function love.load()
+    love.window.setMode(WIDTH, HEIGHT)
+    start_downloader()
+end
 
 function love.update(dt)
     timer = timer + dt
 
-    start_downloader()
-
-    -- Throw error on thread error
-    local downloader_error = downloader:getError()
-    assert(not downloader_error, downloader_error)
-
+    -- Handle rror on thread error
     -- JSON debugging
     --
     -- local json = love.thread.getChannel('json'):pop()
@@ -86,24 +84,38 @@ function love.update(dt)
 end
 
 function love.draw()
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+
+    love.graphics.setColor(0.1, 0.1, 0.1, 1)
+    love.graphics.rectangle("fill", 0, 0, w, h)
+
     if next_image then
         love.graphics.setColor(1, 1, 1, next_image_alpha)
-        local sx = love.graphics.getHeight() / next_image:getWidth()
-        local sy = love.graphics.getWidth() / next_image:getHeight()
+        local sx = h / next_image:getWidth()
+        local sy = w / next_image:getHeight()
 
-        love.graphics.draw(next_image, love.graphics.getWidth(), 0,
-                           math.rad(90), sx, sy)
+        love.graphics.draw(next_image, w, 0, math.rad(90), sx, sy)
     end
 
     if current_image then
         love.graphics.setColor(1, 1, 1, current_image_alpha)
-        local sx = love.graphics.getHeight() / current_image:getWidth()
-        local sy = love.graphics.getWidth() / current_image:getHeight()
-        love.graphics.draw(current_image, love.graphics.getWidth(), 0,
-                           math.rad(90), sx, sy)
+        local sx = h / current_image:getWidth()
+        local sy = w / current_image:getHeight()
+        love.graphics.draw(current_image, w, 0, math.rad(90), sx, sy)
     end
 end
 
 function love.quit()
     if downloader and downloader:isRunning() then downloader:release() end
+end
+
+function love.threaderror(_, errorstr)
+    print(errorstr)
+    last_image_change_time = timer
+    downloader = nil
+end
+
+function love.keypressed(key, scancode, isrepeat)
+    if key == "escape" then love.event.quit() end
 end
