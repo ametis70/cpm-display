@@ -35,7 +35,6 @@ end
 function love.update(dt)
     timer = timer + dt
 
-    -- Handle rror on thread error
     -- JSON debugging
     --
     -- local json = love.thread.getChannel('json'):pop()
