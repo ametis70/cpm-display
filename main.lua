@@ -85,8 +85,10 @@ function love.update(dt)
 
 	if last_image_change_time ~= nil and timer > last_image_change_time + IMAGE_DURATION then
 		last_image_change_time = nil
-		downloader:release()
-		downloader = nil
+		if downloader then
+			downloader:release()
+			downloader = nil
+		end
 		start_downloader()
 	end
 end
@@ -138,6 +140,6 @@ function love.keypressed(key, scancode, isrepeat)
 		love.event.quit()
 	end
 	if key == "d" then
-		debug = !debug
+		debug = not debug
 	end
 end
