@@ -138,6 +138,6 @@ function love.keypressed(key, scancode, isrepeat)
 		love.event.quit()
 	end
 	if key == "d" then
-		debug = true
+		debug = !debug
 	end
 end
